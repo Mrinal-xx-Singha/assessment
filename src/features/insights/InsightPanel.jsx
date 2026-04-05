@@ -1,5 +1,5 @@
-import React from "react";
 import { useFinance } from "../../context/FinanceContext";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const InsightPanel = () => {
   const { transactions } = useFinance();
@@ -8,7 +8,7 @@ const InsightPanel = () => {
   const expensesByCategory = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => {
-      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      acc[t.category] = (acc[t.category] || 0) + parseInt(t.amount);
       return acc;
     }, {});
   const sortedArray = Object.entries(expensesByCategory).sort(
@@ -21,7 +21,7 @@ const InsightPanel = () => {
     .filter((t) => t.type === "expense")
     .reduce(
       (acc, t) => {
-        acc.total += t.amount;
+        acc.total += parseInt(t.amount);
         acc.count += 1;
         return acc;
       },
@@ -34,10 +34,10 @@ const InsightPanel = () => {
   //   savings rate percentage
   const totalIncome = transactions
     .filter((t) => t.type === "income")
-    .reduce((acc, t) => acc + t.amount, 0);
+    .reduce((acc, t) => acc + parseInt(t.amount), 0);
   const totalExpense = transactions
     .filter((t) => t.type === "expense")
-    .reduce((acc, t) => acc + t.amount, 0);
+    .reduce((acc, t) => acc + parseInt(t.amount), 0);
   const savingsRate = Math.round(
     ((totalIncome - totalExpense) / totalIncome) * 100,
   );
@@ -59,7 +59,7 @@ const InsightPanel = () => {
           <h3 className="text-xs font-semibold uppercase tracking-wider opacity-80 mb-1">
             Avg Expense
           </h3>
-          <p className="text-2xl font-bold">${averageExpense || 0}</p>
+          <p className="text-2xl font-bold">{formatCurrency(averageExpense || 0)}</p>
         </div>
         <div
           className={`p-5 rounded-lg border ${

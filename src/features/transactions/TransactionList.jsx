@@ -1,6 +1,7 @@
-import React from "react";
 import { useFinance } from "../../context/FinanceContext";
 import TransactionForm from "./TransactionForm";
+import { Search, SquarePen, Trash } from "lucide-react";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const TransactionList = () => {
   const {
@@ -10,6 +11,7 @@ const TransactionList = () => {
     searchTerm,
     setSearchTerm,
     filterType,
+    setEditingTransaction,
     setFilterType,
   } = useFinance();
 
@@ -20,6 +22,15 @@ const TransactionList = () => {
       setTransactionData((previousTransactions) =>
         previousTransactions.filter((t) => t.id !== id),
       );
+    }
+  };
+  // admin can edit transactions
+  const handleEditTransaction = (id) => {
+    if (role !== "Admin") {
+      alert("You are not authorized to edit transactions");
+    } else {
+      const transactionToEdit = transactions.find((t) => t.id === id);
+      setEditingTransaction(transactionToEdit);
     }
   };
 
@@ -48,6 +59,10 @@ const TransactionList = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <Search
+            className="absolute right-3 top-2.5 text-gray-400"
+            size={20}
+          />
         </div>
         <div className="sm:w-48">
           <select
@@ -64,8 +79,8 @@ const TransactionList = () => {
       {role === "Admin" && <TransactionForm />}
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto p-4 m-2">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
                 <th className="px-6 py-4">Date</th>
@@ -90,8 +105,8 @@ const TransactionList = () => {
                   <td
                     className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${transaction.type === "income" ? "text-green-600" : "text-gray-900"}`}
                   >
-                    {transaction.type === "income" ? "+" : "-"}$
-                    {transaction.amount}
+                    {transaction.type === "income" ? "+" : "-"}
+                    {formatCurrency(transaction.amount)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">
@@ -115,10 +130,16 @@ const TransactionList = () => {
                   {role === "Admin" && (
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       <button
+                        onClick={() => handleEditTransaction(transaction.id)}
+                        className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
+                      >
+                        <SquarePen size={20} />
+                      </button>
+                      <button
                         onClick={() => handleDeleteTransaction(transaction.id)}
                         className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
                       >
-                        Delete
+                        <Trash size={20} />
                       </button>
                     </td>
                   )}

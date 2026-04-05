@@ -7,6 +7,7 @@ const FinanceProvider = ({ children }) => {
   const [role, setRole] = useState("Viewer");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   return (
     <FinanceContext.Provider
@@ -19,6 +20,8 @@ const FinanceProvider = ({ children }) => {
         setSearchTerm,
         filterType,
         setFilterType,
+        editingTransaction,
+        setEditingTransaction,
       }}
     >
       {children}
