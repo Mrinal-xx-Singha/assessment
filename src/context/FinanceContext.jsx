@@ -5,6 +5,9 @@ const FinanceContext = createContext();
 const FinanceProvider = ({ children }) => {
   const [transactionData, setTransactionData] = useState(transactions);
   const [role, setRole] = useState("Viewer");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("All");
+
   return (
     <FinanceContext.Provider
       value={{
@@ -12,6 +15,10 @@ const FinanceProvider = ({ children }) => {
         setTransactionData,
         role,
         setRole,
+        searchTerm,
+        setSearchTerm,
+        filterType,
+        setFilterType,
       }}
     >
       {children}
